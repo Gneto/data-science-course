@@ -68,7 +68,7 @@ def get_pie_chart(entered_site):
         return fig
     else:
         filtered_df = spacex_df.loc[spacex_df['Launch Site'] == entered_site]
-        fig = px.pie(filtered_df, values='class', 
+        fig = px.pie(filtered_df, values='Flight Number', 
         names='class', 
         title='Total Success Launches for site {}'.format(entered_site))
         return fig
@@ -80,12 +80,14 @@ def get_pie_chart(entered_site):
             Input(component_id='site-dropdown', component_property='value'), 
             Input(component_id="payload-slider", component_property="value"))
 def get_correlation_chart(entered_site, slider):
+    global spacex_df
+
+    spacex_df_v1 = spacex_df.loc[(spacex_df['Payload Mass (kg)'] >= slider[0]) & (spacex_df['Payload Mass (kg)'] <= slider[1]) ]
     if entered_site == 'ALL':
-        fig = px.scatter(spacex_df, y='class', x='Payload Mass (kg)', color='Booster Version Category')
+        fig = px.scatter(spacex_df_v1, y='class', x='Payload Mass (kg)', color='Booster Version Category')
         return fig
     else:
-        print(slider)
-        filtered_df = spacex_df.loc[[spacex_df['Launch Site'] == entered_site and spacex_df['Payload Mass (kg)'] == slider]]
+        filtered_df = spacex_df_v1.loc[(spacex_df_v1['Launch Site'] == 'VAFB SLC-4E') ]
         fig = px.scatter(filtered_df, y='class', x='Booster Version Category')
         return fig
 
